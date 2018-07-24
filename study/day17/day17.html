@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>第十七天到第十八天，“如果”可以“重来”</title>
+	</head>
+	<body>
+	<input id="dec-number" type="number" placeholder="输入一个十进制非负整数">
+	<input id="bin-bit" type="number" placeholder="输入转化后二进制数字位数">
+    <button id="trans-btn">转化为二进制</button>
+    <p>运算结果：<span id="result"></span></p>
+    <p style="width: 700px;word-wrap:break-word ;"><span style="display: block;width: 150px;">1-100含有3的情况：</span><span id="result1"></span></p>
+    <p style="width: 700px;word-wrap:break-word ;"><span style="display: block;width: 150px;">九九乘法表：</span><span id="result2"></span></p>
+	</body>
+	<script type="text/javascript" src="jquery-1.9.1.min.js"></script>
+	<script type="text/javascript">
+		document.getElementById('trans-btn').onclick=function(){
+		var fnum=parseInt(document.getElementById('dec-number').value);
+		var snum=parseInt(document.getElementById('bin-bit').value);
+	    if(fnum<0){
+	    	alert("请输入一个大于0的整数，谢谢！");
+	    	return;
+	    }
+		var result=fnum.toString(2);
+		if(result.length>snum){
+			var result1=result.substr(result.length-snum,snum);
+			document.getElementById('result').innerHTML=result1
+			return;
+		}
+		alert("保留位数过大！");
+		document.getElementById('result').innerHTML=result
+		}
+	</script>
+	<script>
+		var p = document.getElementById('result1');
+		var r="";
+		for(var i=1;i<=100;i++)
+		{   if(i===1){
+			r=1
+				continue;
+		}
+			if(i%3==0||i%10==3||parseInt(i/10)==3)
+			{r=r+","+"pa";
+				continue;
+			}
+			r=r+","+i;
+			
+	}
+		p.innerHTML = r
+
+	</script>
+	<script>
+			var d=new Date();
+			var s=parseInt(d.getHours());
+			console.log(s);
+			if(s<=5){
+				alert("凌晨时间，该休息了！");
+			}
+			else if(s>5&&s<=11){
+				alert("早上好！");
+			}
+			else if(s>11&&s<=13){
+				alert("中午好！");
+			}
+			else if(s>13&&s<=17){
+				alert("下午好！");
+			}
+			else{
+			alert("晚上好！记得早点休息");
+			}
+	</script>
+	<script>
+		var c="";
+		for(var x=1;x<10;x++)
+		{
+			for(var y=1;y<=x;y++){
+				if(y==1){
+					c=c+y+"*"+x+"="+x*y
+					continue
+				}
+				c=c+"&nbsp;,&nbsp;"+y+"*"+x+"="+x*y
+			}
+			c += "<br/>"
+		}
+		document.getElementById('result2').innerHTML = c;
+	</script>
+</html>

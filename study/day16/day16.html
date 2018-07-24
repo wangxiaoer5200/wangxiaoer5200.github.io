@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>IFE ECMAScript-第十六天，开始感受JS的乐趣</title>
+		<link rel="stylesheet" type="text/css" href="day16.css">
+	</head>
+	<body  style="background: #e5e5e5;width: 100%;">
+		<button onclick="test()" style="width: 100px;height: 50px;margin-left: 50px;color: #00BFFF;background: #000000;border: none;border-radius: 5px;font-size: 16px;font-weight: bold;">点击</button>
+		<div class="resume-content clearfloat">
+			<label class="resume-content-title left"><h1>简历</h1></label>
+
+			<label class="title">基本信息</label>
+			<label class="content">
+ 		<span>姓名<small>王小二</small></span>
+ 		<span>性别<small>男</small></span>
+ 		<span>应聘岗位<small>web前端工程师</small></span>
+ 	</label>
+			<label class="title">联系方式</label>
+			<label class="content">
+ 		<span>手机<small>12345678910</small></span>
+ 		<span>Email<small class="special">jionin@baidu.com</small></span>
+ 		<span>个人主页<small class="special">wangxiaoer.githu</small></span>
+ 	</label>
+			<label class="title">能力描述</label>			
+			<div class="first-div"><span>熟悉技能</span>
+				<span>熟练掌握html、css、js</span>
+				<span id="more" style="color: deepskyblue;cursor: pointer;">更多》》</span><span id="hide" style="display: none;">熟练框架jq、vue、Angular...</span>
+			</div>
+			<div class="second-div"><span>综合能力</span>
+				<span>良好的沟通，主动积极，努力勤奋<button onclick="test1()" style="margin-left: 10px;">点击查看个人兴趣</button></span></div>				
+			<label class="title">教育经历</label>						
+			<div class="first-div"><span>研究生</span>
+				<span>百度前端技术学院css学院</span></div>
+			<div class="second-div"><span>本科</span>
+				<span>百度前端技术学院html学院</span></div>			
+			<label class="title">项目经历</label>						
+			<div class="first-div"><span>小度小度</span>
+				<span>作为前端工程师参与了ABC组件的开发</span></div>
+			<div class="second-div"><span>SAN&nbsp;&nbsp;Doc</span>
+				<span>作为项目的文档工程师参与了SAN&nbsp;&nbsp;Doc源代码编写</span>			
+			</div>						
+		</div>		
+		<div style="padding: 30px;border: 1px solid #E5E5E5;">
+			<p>附带一个test：</p>
+			<div style="margin: 10px 0;">
+				<span>第一个数：</span><input id="first-number" type="text" value="0" placeholder="第一个整数">
+			</div>
+			<div style="margin: 10px 0;">
+				<span>第二个数：</span><input id="second-number" type="text" value="0" placeholder="第二个整数">
+			</div>
+			<button id="add-btn">加</button>
+			<button id="minus-btn">减</button>
+			<button id="times-btn">乘</button>
+			<button id="divide-btn">除</button>
+			<div style="margin-top: 10px;">
+				<span>运算结果：</span><p id="result"></p>
+			</div>			
+		</div>
+		<script type="text/javascript">
+			document.getElementById('more').onclick=function(){
+				document.getElementById('more').style.display='none';
+				document.getElementById('hide').style.display='inline-block';
+			}
+			function test(){
+                var d=new Date();
+				alert("你好！现在时刻："+d)
+			}
+			function test1(){
+                alert("兴趣：篮球、羽毛球、跑步、游泳、看书。。。")
+			}
+		</script>
+		<script>
+			document.getElementById('add-btn').onclick = function() {
+				var a = document.getElementById('first-number').value
+				var b = document.getElementById('second-number').value
+				if(isNaN(a) || isNaN(b)) {
+					alert('数值类型错误,请重新输入')
+					return
+				}
+				document.getElementById('result').innerHTML = Number(a) + Number(b)
+			}
+			document.getElementById('minus-btn').onclick = function() {
+				var a = document.getElementById('first-number').value
+				var b = document.getElementById('second-number').value
+				if(isNaN(a) || isNaN(b)) {
+					alert('数值类型错误,请重新输入')
+					return
+				}
+				document.getElementById('result').innerHTML = Number(a) - Number(b)
+			}
+			document.getElementById('times-btn').onclick = function() {
+				var a = document.getElementById('first-number').value
+				var b = document.getElementById('second-number').value
+				if(isNaN(a) || isNaN(b)) {
+					alert('数值类型错误,请重新输入')
+					return
+				}
+				document.getElementById('result').innerHTML = Number(a) * Number(b)
+			}
+			document.getElementById('divide-btn').onclick = function() {
+
+				var a = document.getElementById('first-number').value
+				var b = document.getElementById('second-number').value
+				if(isNaN(a) || isNaN(b)) {
+					alert('数值类型错误,请重新输入')
+					return
+				}
+				if(b == 0) {
+					alert('被除数不能为零,请重新输入')
+					return;
+				}
+				document.getElementById('result').innerHTML = Number(a) / Number(b)
+			}
+		</script>
+	</body>
+
+</html>

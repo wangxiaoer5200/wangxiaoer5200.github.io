@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>第二十到第二十一天：让你和页面对话</title>
+	</head>
+	<style type="text/css">
+		div {
+			margin: 20px;
+		}
+		
+		select {
+			display: none;
+		}
+		
+		#ul1 li:hover {
+			cursor: pointer
+		}
+		
+		#fade-btn {
+			width: 100px;
+			height: 40px;
+			background: #FF7700;
+			color: #FFFFFF;
+			border: none;
+			border-radius: 5px;
+		}
+		
+		#fade-btn:hover {
+			cursor: pointer;
+		}
+		
+		#fade-btn:disabled {
+			background: #e5e5e5;
+			color: #FFFFFF;
+		}
+		
+		#smile {
+			width: 480px;
+			height: 480px;
+			background-image: url(smile.jpg);
+			background-position: 0 0;
+		}
+	</style>
+
+	<body>
+		<!--test1-->
+		<div>
+			<input id="name" type="text" onkeydown="keydown()">
+			<button id="submit-btn">Submit</button>
+		</div>
+		<!--test2-->
+		<div>
+			<label>
+                <input id="school" name="status" type="radio">
+                 School
+            </label>
+			<label>
+                <input id="company" name="status" type="radio">
+                Company
+            </label>
+
+			<select id="school-select">
+				<option>北京邮电大学</option>
+				<option>黑龙江大学</option>
+				<option>华中科技大学</option>
+			</select>
+
+			<select id="company-select">
+				<option>百度</option>
+				<option>爱奇艺</option>
+			</select>
+		</div>
+		<!--test3-->
+		<div>
+			<ul id="ul1">
+				<li>111</li>
+				<li>222</li>
+				<li>333</li>
+				<li>444</li>
+			</ul>
+		</div>
+		<!--test4-->
+		<div>
+			<div id="fade-obj" style="width:300px;height:300px;background:#000"></div>
+			<button id="fade-btn">淡出</button>
+		</div>
+		<div>
+			<!--test5-->
+			<div id="smile"></div>
+		</div>
+
+		<script>
+			//			1
+			var btn = document.getElementById('submit-btn')
+			btn.onclick = function() {
+				var inputValue = document.getElementById('name').value
+				console.log(inputValue)
+			}
+
+			function keydown(e) {
+				e = e || window.event;
+				if(e.key === "Enter") {
+					var inputValue = document.getElementById('name').value
+					console.log(inputValue)
+				} else if(e.key === "Escape") {
+					document.getElementById('name').value = ''
+				} else {}
+			}
+		</script>
+		<script>
+			//			2
+			document.getElementById('school').onclick = function() {
+				var school = document.getElementById('school-select')
+				var company = document.getElementById('company-select')
+				school.style.display = 'block'
+				company.style.display = 'none'
+			}
+			document.getElementById('company').onclick = function() {
+				var school = document.getElementById('school-select')
+				var company = document.getElementById('company-select')
+				school.style.display = 'none'
+				company.style.display = 'block'
+			}
+		</script>
+		<script>
+			//			3
+			window.onload = function() {　　
+				var oUl = document.getElementById("ul1");　　
+				oUl.onclick = function(ev) {　　　　
+					var ev = ev || window.event;　　　　
+					var target = ev.target || ev.srcElement;　　
+					if(target.nodeName.toLowerCase() == 'li') {　　　　　　　
+						alert(target.innerHTML);　　　　
+					}　　
+				}
+			}
+		</script>
+		<script>
+			//			4
+			var obj = document.getElementById('fade-obj')
+			var btn1 = document.getElementById('fade-btn')
+			btn1.onclick = function() {
+				if(btn1.innerHTML == '淡出') {
+					var time = 10
+					var fadeOut = setInterval(function() {
+						time--;
+						obj.style.opacity = time / 10;
+						btn1.disabled = "disabled";
+						if(time <= 0) {
+							clearInterval(fadeOut);
+							btn1.innerHTML = "淡入";
+							btn1.removeAttribute('disabled');
+						}
+					}, 100)
+				} else {
+					var time = 0
+					var fadeIn = setInterval(function() {
+						time++;
+						obj.style.opacity = time / 10;
+						btn1.disabled = "disabled";
+						if(time >= 10) {
+							clearInterval(fadeIn);
+							btn1.innerHTML = "淡出";
+							btn1.removeAttribute('disabled');
+						}
+					}, 100)
+				}
+
+			}
+		</script>
+		<script>
+			//			5
+			var smile = document.getElementById("smile");
+			var num = 0;
+			setInterval(function() {
+				smile.style.backgroundPositionY = "-" + num + "px";
+				if(num >= 8160) {
+					num = 0;
+				} else {
+					num += 480;
+				}
+			}, 200);
+		</script>
+	</body>
+
+</html>

@@ -1,0 +1,24 @@
+table {
+    border-collapse: collapse;
+}
+
+td, th {
+    width: 80px;
+    height: 18px;
+    border: 1px solid #000;
+    text-align: center;
+}
+
+#svg-wrapper{
+    float: left;
+}
+#canvas-wrapper{
+    float: left;
+    margin-left: 200px;
+}
+tr:not(:first-child):hover{
+    background-color:rgb(245, 122, 101);
+}
+tr:hover td:first-child{
+    background-color:white;
+}

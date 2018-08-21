@@ -1,0 +1,42 @@
+table {
+    border-collapse: collapse;
+}
+
+td,
+th {
+    width: 100px;
+    height: 25 px;
+    border: 1px solid #000;
+    text-align: center;
+}
+
+#svg-wrapper {
+    float: left;
+}
+
+#canvas-wrapper {
+    float: left;
+    margin-left: 200px;
+}
+
+tr:not(:first-child):hover {
+    background-color: rgb(245, 122, 101);
+}
+
+tr:hover td:first-child {
+    background-color: white;
+}
+
+#editor {
+    margin-left: 5px;
+}
+
+a {
+    cursor: pointer;
+}
+
+.editorbtn {
+    background-color: rgb(255, 255, 255);
+    margin:5px 2px;
+    cursor: pointer;
+}

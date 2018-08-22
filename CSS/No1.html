@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>No.1 - 制作一个简单的菜单动画效果</title>
+</head>
+<style>
+    .wrap{
+        width: 150px;
+        margin: 0 auto;
+        text-align: center;
+    }
+    input[type="checkbox"]{
+        visibility: hidden;
+    }
+    .text{
+        font-size:24px;
+        font-weight: bold;
+        transition: color .3s;
+    }
+    .text::after{
+        content: ' ';
+        width:0;
+        height: 3px;
+        display: block;
+        background-color: #0080ff;
+        margin: 0 auto;
+        margin-top:10px;
+        transition:width .3s;
+    }
+    input:checked~.text::after{
+        width:100px;
+    }
+    input:checked~.text{
+        color:#0080ff;
+    }
+    label{
+        display:inline-block;
+        border: 1px solid #000000;
+        border-radius:5px;
+        padding:3px 10px;
+        margin-top:20px; 
+    }
+    label:active{
+       background-color:#0080ff;
+    }
+</style>
+<body>
+    <div class="wrap">
+        <input type="checkbox" id="checkbox">
+        <div class="text">
+                前端学院
+        </div>
+        <label for="checkbox">切换样式</label>
+    </div>
+</body>
+</html>

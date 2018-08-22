@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script src="https://unpkg.com/san@latest/dist/san.dev.js"></script>
+	</head>
+	<style type="text/css">
+		.table-text {
+			display: inline-block;
+			width: 120px;
+			line-height: 28px;
+			border: 1px solid #E5E5E5;
+			text-align: center;
+		}
+		
+		.title {
+			font-weight: bold;
+		}
+		
+		.table-content {
+			display: flex;
+			flex-direction: row;
+		}
+		
+		.table-row {
+			display: flex;
+			flex-direction: column;
+			margin-right: 5px;
+		}
+	</style>
+
+	<body>
+
+	</body>
+	<script>
+		var MyApp = san.defineComponent({
+			template: `<div>
+			<p><button on-click="addItem()">新增</button></p>
+			<div>
+                <span class="table-text title">{{titleList[0]}}</span>
+                <span class="table-text title">{{titleList[1]}}</span>
+                <span class="table-text title">{{titleList[2]}} </span>
+            </div>
+            <div class="table-content">
+            <div class="table-row"><span s-for="p in tableList" title="{{p.name}}" class="table-text">{{p.name}}</span></div>
+               <div class="table-row"><span s-for="p in tableList" title="{{p.status}}" class="table-text">{{p.status}}</span></div>
+               <div class="table-row"><span s-for="p in tableList" class="table-text">
+               <button s-if="p.status=='待审核'" on-click="postItem(p)">审核</button>
+               <button s-else on-click="delItem(p)">删除</button>
+               </span></div>
+            </div>
+                       
+			</div>`,
+			initData: function() {
+				return {
+					titleList: ["姓名", "审核状态", "操作"],
+					tableList: [{
+						name: "张三",
+						status: "合格"
+					}, {
+						name: "李四",
+						status: "不合格"
+					}, {
+						name: "王五",
+						status: "待审核"
+					}, {
+						name: "小六",
+						status: "待审核"
+					}]
+				};
+			},
+			postItem: function(v) {
+				let data = v
+				data.status = "合格"
+				this.data.remove('tableList', v);
+				this.data.unshift('tableList', data);
+				
+		},
+		delItem: function(v) {
+			this.data.remove('tableList', v);
+		},
+		addItem: function () {
+        this.data.push('tableList', {
+						name: "新增测试",
+						status: "待审核"
+					});
+    }
+
+		});
+		var myApp = new MyApp();
+		myApp.attach(document.body);
+	</script>
+
+</html>

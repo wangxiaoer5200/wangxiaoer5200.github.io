@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script src="https://unpkg.com/san@latest/dist/san.dev.js"></script>
+	</head>
+
+	<body>
+
+	</body>
+	<script>
+		var MyApp = san.defineComponent({
+			template: `<div><input type="text" value="{= name =}" placeholder="请输入姓名"> 
+			<input type="number" value="{= age =}" placeholder="请输入年龄">
+			<input type="text" value="{= des =}" placeholder="请输入简历">
+			<p><button on-click="resetData()">重置信息</button></p>
+			<P>姓名：{{name}}</P>
+			<P>年龄：{{age}}</P>
+			<P>简历：{{des}}</P></div>`,
+			initData: function() {
+				return {
+					name: "",
+					age: "",
+					des: ""
+				};
+			},
+			resetData: function() {
+				this.data.set('name', "");
+				this.data.set('age', "");
+				this.data.set('des', "");
+			},
+
+		});
+		var myApp = new MyApp();
+		myApp.attach(document.body);
+	</script>
+
+</html>

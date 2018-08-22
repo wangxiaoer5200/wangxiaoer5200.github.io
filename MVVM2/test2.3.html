@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script src="https://unpkg.com/san@latest/dist/san.dev.js"></script>
+	</head>
+
+	<body>
+
+	</body>
+	<script>
+		var MyApp = san.defineComponent({
+			template: `<div id="block" style="background:{{colorValue}};width:100px;height:100px;" on-click="changeColor()"></div>`,
+			initData: function() {
+				return {
+					colorValue:"red"
+				};
+			},
+			changeColor: function() {
+				let color = this.data.get('colorValue')
+				if(color=="red"){
+					this.data.set('colorValue', "blue");
+				}else{
+					this.data.set('colorValue', "red");
+				}		
+			},
+
+		});
+		var myApp = new MyApp();
+		myApp.attach(document.body);
+	</script>
+
+</html>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script src="https://unpkg.com/san@latest/dist/san.dev.js"></script>
+	</head>
+	<style type="text/css">
+		.changed {
+			color: red;
+		}
+	</style>
+
+	<body>
+
+	</body>
+	<script>
+		var Panel2 = san.defineComponent({
+			template: `<div>
+			<p>子组件:<input type="text" style="margin:0 10px" value="{= value =}"><button  on-click="mesgParent()">通知父组件</button></p></div>`,
+			initData: function() {
+				return {
+					value: ""
+				};
+			},
+			mesgParent: function() {
+				this.dispatch('child-submitted', this.data.get('value'));
+			},
+			created(){
+				 this.data.set('value', undefined);
+			}
+		});
+
+		var Panel = san.defineComponent({
+			components: {
+				'y-panel': Panel2
+			},
+			template: `<div><y-panel value="{{ value1 }}"></y-panel>
+			<p style="color:green">我是父组件:<input class="{{changed?'changed':''}}" type="text" style="margin:0 10px" value="{= value1 =}"></p></div>`,
+			initData: function() {
+				return {
+					changed: false,
+					value1: "静静等待用户输入"
+				};
+			},
+			messages: {
+				'child-submitted' (msg) {
+					this.data.set('value1', msg.value);
+					this.data.set('changed', true);
+					// emit a message 'UI:parent-notified' to the parent component
+					this.dispatch('parent-notified', msg.value);
+				}
+			}
+		});
+
+		var MyApp = san.defineComponent({
+			components: {
+				'x-panel': Panel
+			},
+			template: `<div>
+			<x-panel value1="{{ value2 }}"></x-panel>
+			<p style="color:pink">我是更高级父组件:<input type="text" class="{{changed?'changed':''}}" style="margin:0 10px" value="{= value2 =}"></p></div>`,
+			initData: function() {
+				return {
+					changed: false,
+					value2: "我也静静等待用户输入"
+				};
+			},
+			messages: {
+				'parent-notified' (msg) {
+					this.data.set('value2', msg.value);
+					this.data.set('changed', true);
+				}
+			}
+		});
+		var myApp = new MyApp();
+		myApp.attach(document.body);
+	</script>
+
+</html>

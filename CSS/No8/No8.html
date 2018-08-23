@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>No.8 - 把 AE 动画转换成 Web 原生动画</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: #000000;
+        }
+
+        .wrap {
+            width: 600px;
+            height: 600px;
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            margin: auto;
+            text-align: center;
+        }
+
+        .wrap>div {
+            display: inline-block;
+            width: 300px;
+            height: 250px;
+            margin: 10px;
+        }
+
+        .ani2 {
+            background: #6a6d6a;
+            border: 2px solid white;
+            transition: 0.2s ease-in-out all;
+        }
+
+        .ani2:hover {
+            box-shadow: 2px 2px 3px white;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrap">
+        <div class="ani1"></div>
+        <div class="ani2"></div>
+    </div>
+    <script src="./lottie.js"></script>
+    <script>
+        var wrap1 = document.querySelector('.ani1');
+        var wrap2 = document.querySelector('.ani2')
+        var ani1 = lottie.loadAnimation({
+            container: wrap1,
+            renderer: 'svg',
+            loop: true,
+            autoplay: true,
+            path: './data1.json',
+        });
+        var ani2 = lottie.loadAnimation({
+            container: wrap2,
+            renderer: 'svg',
+            autoplay: false,
+            path: './data2.json',
+        })
+        wrap2.addEventListener('mouseenter', function () {
+            ani2.play();
+        }, false);
+        wrap2.addEventListener('mouseleave', function () {
+            ani2.stop();
+        }, false);
+    </script>
+</body>
+
+</html>

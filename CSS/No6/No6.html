@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>利用 CSS animation 制作一个炫酷的 Slider</title>
+</head>
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+    }
+
+    #showImg img {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+    }
+
+    #chooseImg {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        text-align: center;
+        z-index: 10;
+    }
+
+    #chooseImg img {
+        width: 250px;
+        height: 150px;
+        opacity: 0.5;
+        margin-left: 5px;
+    }
+
+    #chooseImg img:active {
+        cursor: pointer;
+    }
+
+    #chooseImg img:hover {
+        opacity: 1;
+    }
+
+    #showImg img:nth-of-type(1) {
+
+        animation-duration: 0.5s;
+
+        animation-timing-function: ease-out;
+    }
+
+    #showImg img:nth-of-type(2) {
+
+        animation-duration: 0.5s;
+
+        animation-timing-function: ease-out;
+    }
+
+    #showImg img:nth-of-type(3) {
+
+        animation-duration: 1s;
+
+        animation-timing-function: ease-in;
+    }
+
+    #showImg img:nth-of-type(4) {
+
+        animation-duration: 1s;
+
+        animation-timing-function: ease-out;
+    }
+
+    #showImg img:nth-of-type(5) {
+
+        animation-duration: 0.7s;
+
+        animation-timing-function: ease-in-out;
+
+    }
+
+    @keyframes mymove1 {
+        from {
+            left: -500px;
+        }
+        to {
+            left: 0;
+        }
+    }
+
+    @keyframes mymove2 {
+        from {
+            top: 350px;
+        }
+        to {
+            top: 0;
+        }
+    }
+
+    @keyframes mymove3 {
+        from {
+            transform: scale(0.1);
+        }
+        to {
+            transform: scale(1);
+        }
+    }
+
+    @keyframes mymove4 {
+        from {
+            transform: scale(2);
+        }
+        to {
+            transform: scale(1);
+        }
+    }
+
+    @keyframes mymove5 {
+        from {
+            transform: rotateZ(-360deg) scale(0.1);
+        }
+        to {
+            transform: rotateZ(0deg) scale(1);
+        }
+    }
+</style>
+
+<body>
+    <div id="showImg">
+        <img src="1.jpg" alt="pic1">
+        <img src="2.jpg" alt="pic2">
+        <img src="3.jpg" alt="pic3">
+        <img src="4.jpg" alt="pic4">
+        <img src="5.jpg" alt="pic5">
+    </div>
+    <div id="chooseImg">
+        <img src="1.jpg" alt="pic1">
+        <img src="2.jpg" alt="pic2">
+        <img src="3.jpg" alt="pic3">
+        <img src="4.jpg" alt="pic4">
+        <img src="5.jpg" alt="pic5">
+    </div>
+</body>
+<script>
+    window.onload = function () {
+
+            var show = document.querySelectorAll("#showImg img");
+            var choose = document.querySelectorAll("#chooseImg img");
+
+            for (let i = 0; i < 5; i++) {
+
+                choose[i].onclick = function () {
+                    show[0].parentNode.appendChild(show[i]);
+                    show[i].style.animationName = "mymove" + (i + 1);
+                };
+            }
+
+            // 闭包内部函数
+            // for(var i=0;i<5;i++){
+            // 			 (function(i){
+            // 				choose[i].onclick = function (){
+            // 					// 移除大图节点然后再添加，默认添加到最后一个img节点使其出现在所有图片最上层
+            // 					show[0].parentNode.appendChild(show[i]);
+            // 					show[i].style.animationName = "mymove"+(i+1);
+            // 				};
+
+            // 			})(i);
+            // 		}
+                 };
+</script>
+
+</html>

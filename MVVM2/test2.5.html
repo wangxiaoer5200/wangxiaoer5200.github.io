@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script src="https://unpkg.com/san@latest/dist/san.dev.js"></script>
+	</head>
+
+	<body>
+
+	</body>
+	<script>
+		var MyApp = san.defineComponent({
+			template: `<div>
+			<div s-for="item in inputList" style="margin:10px 0">
+               <input type="text"  value="{= item.value =}" placeholder="{= item.placehold =}" disabled="{= item.disabled =}">
+               <span>{{item.detail}}</span>
+            </div>
+        
+            <div s-for="item in checkList" style="margin:10px">
+               <input
+               type="checkbox"
+               checked="{= item.checked =}"
+               disabled="{= item.disabled =}"
+
+             >
+                 是否开启
+
+          <span>{{item.detail}}</span>
+        </div>
+			</div>`,
+			initData: function() {
+				return {
+					inputList:[{
+						value: "",
+						placehold: "请输入文字",
+						disabled: false,
+						detail:'常态'
+					},
+					{
+						value: "",
+						placehold: "请输入文字",
+						disabled: false
+					},{
+						value: "",
+						placehold: "请输入文字",
+						disabled: true,
+						detail:'不可用'
+					}
+					],
+					checkList:[{checked:true,
+					disabled:false},
+					{checked:false,
+					disabled:true},
+					{checked:false,
+					disabled:false}]
+
+				};
+			},
+		});
+
+		var myApp = new MyApp();
+		myApp.attach(document.body);
+	</script>
+
+</html>

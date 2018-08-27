@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script src="https://unpkg.com/san@latest/dist/san.dev.js"></script>
+	</head>
+	<style type="text/css">
+		.text>li {
+			padding: 5px;
+		}
+		
+		.text>li:hover {
+			background: #E5E5E5;
+			cursor: pointer;
+		}
+		
+	</style>
+
+	<body>
+
+	</body>
+	<script>
+		var MyApp = san.defineComponent({
+			template: `<div style="width:300px;margin:50px auto;">
+               <ul class="text"><li on-click="toggle1">点击展开内容1
+               <p s-if="textValue1" style="background:red;" s-transition="hook1">这里放着一些内容1的文本</p></li>
+               <li on-click="toggle2">点击展开内容2
+               <p s-if="textValue2" style="background:blue;" s-transition="hook2">这里放着一些内容2的文本</p></li>
+               <li on-click="toggle3">点击展开内容3
+               <p s-if="textValue3" style="background:yellow;" s-transition="hook3">这里放着一些内容3的文本</p></li></ul>
+              </div>`,
+			initData() {
+				return {
+					textValue1: false,
+					textValue2: false,
+					textValue3: false
+				};
+			},
+			toggle1() {
+				console.log(1)
+				this.data.set("textValue1", !this.data.get('textValue1'));
+			},
+			toggle2() {
+				console.log(1)
+				this.data.set("textValue2", !this.data.get('textValue2'));
+			},
+			toggle3() {
+				console.log(1)
+				this.data.set("textValue3", !this.data.get('textValue3'));
+			},
+			hook1: {
+				enter: function(el, done) {
+					var steps = 100;
+					var currentStep = 0;
+
+					function goStep() {
+						if(currentStep >= steps) {
+							el.style.opacity = 1;
+							done();
+							return;
+						}
+						el.style.opacity = 1 / steps * currentStep++;
+						requestAnimationFrame(goStep);
+					}
+					goStep();
+				},
+
+				leave: function(el, done) {
+					var steps = 100;
+					var currentStep = 0;
+					function goStep() {
+						if(currentStep >= steps) {
+							el.style.opacity = 0;
+							done();
+							return;
+						}
+						el.style.opacity = 1 - 1 / steps * currentStep++;
+						requestAnimationFrame(goStep);
+					}
+
+					goStep();
+				}
+			},
+			hook2: {
+				enter: function(el, done) {
+					var steps = 100;
+					var currentStep = 0;
+
+					function goStep() {
+						if(currentStep >= steps) {
+							el.style.opacity = 1;
+							done();
+							return;
+						}
+						el.style.opacity = 1 / steps * currentStep++;
+						requestAnimationFrame(goStep);
+					}
+					goStep();
+				},
+
+				leave: function(el, done) {
+					var steps = 100;
+					var currentStep = 0;
+					function goStep() {
+						if(currentStep >= steps) {
+							el.style.opacity = 0;
+							done();
+							return;
+						}
+						el.style.opacity = 1 - 1 / steps * currentStep++;
+						requestAnimationFrame(goStep);
+					}
+
+					goStep();
+				}
+			},
+			hook3: {
+				enter: function(el, done) {
+					var steps = 100;
+					var currentStep = 0;
+
+					function goStep() {
+						if(currentStep >= steps) {
+							el.style.opacity = 1;
+							done();
+							return;
+						}
+						el.style.opacity = 1 / steps * currentStep++;
+						requestAnimationFrame(goStep);
+					}
+					goStep();
+				},
+
+				leave: function(el, done) {
+					var steps = 100;
+					var currentStep = 0;
+					function goStep() {
+						if(currentStep >= steps) {
+							el.style.opacity = 0;
+							done();
+							return;
+						}
+						el.style.opacity = 1 - 1 / steps * currentStep++;
+						requestAnimationFrame(goStep);
+					}
+
+					goStep();
+				}
+			}
+		});
+		var myApp = new MyApp();
+		myApp.attach(document.body);
+	</script>
+
+</html>

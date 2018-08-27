@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script src="https://unpkg.com/san@latest/dist/san.dev.js"></script>
+	</head>
+	<style type="text/css">
+		.enter,
+		.leave {
+			transition: all .5s;
+		}
+		
+		.before-enter,
+		.leave {
+			opacity: 0;
+		}
+		
+		.enter,
+		.before-leave {
+			opacity: 1;
+		}
+	</style>
+
+	<body>
+
+	</body>
+	<script>
+		var MyApp = san.defineComponent({
+			template: `<div style="width:300px;margin:50px auto;">
+               <button on-click="toggle">交替</button>
+               <p><span s-if="show" s-transition="hook">        
+               实现动画文本
+               </span></p>   
+              </div>`,
+			initData() {
+				return {
+					show: true
+				};
+			},
+			toggle() {
+				console.log(1)
+				this.data.set("show", !this.data.get('show'));
+			},
+			hook: {
+				enter: function(el, done) {
+					var steps = 100;
+					var currentStep = 0;
+
+					function goStep() {
+						if(currentStep >= steps) {
+							el.style.opacity = 1;
+							done();
+							return;
+						}
+						el.style.opacity = 1 / steps * currentStep++;
+						requestAnimationFrame(goStep);
+					}
+					goStep();
+				},
+
+				leave: function(el, done) {
+					var steps = 100;
+					var currentStep = 0;
+					function goStep() {
+						if(currentStep >= steps) {
+							el.style.opacity = 0;
+							done();
+							return;
+						}
+						el.style.opacity = 1 - 1 / steps * currentStep++;
+						requestAnimationFrame(goStep);
+					}
+
+					goStep();
+				}
+			}
+		});
+		var myApp = new MyApp();
+		myApp.attach(document.body);
+	</script>
+
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script src="https://unpkg.com/san@latest/dist/san.dev.js"></script>
+	</head>
+
+	<body>
+
+	</body>
+	<script>
+		var Panel = san.defineComponent({
+			template: `<div style="width:200px;heigt:200px;background:yellow;padding:5px;margin:20px;">
+			<div style="height:100%;width:100%;border:1px solid blue;text-align:center;"><p>
+			<span style="display:inline-block;width:90px;height:30px;line-height: 25px;padding:5px;border-radius:5px;background:#ff7700;color:#ffffff;"><slot></slot></span></p>
+			<p>标题:插槽</p>
+			<p>内容:xxxxx</p>
+			<p>时间:2018-01-01</p></div>
+			</div>`,
+		});
+
+		var MyApp = san.defineComponent({
+					components: {
+						'ui-panel': Panel
+					},
+					template: `<div>
+			<div style="width:800px;margin: 0 auto;">
+			<p style="text-align:center;font-size:24px;font-weight:600;">任务栏</p>
+			<div style="display:flex;flex-direction:row;"><ui-panel>任务一</ui-panel>
+			<ui-panel>任务二</ui-panel>
+			<ui-panel>任务三</ui-panel></div>
+			<div style="display:flex;flex-direction:row;">
+			<ui-panel>任务四</ui-panel>
+			<ui-panel>任务五</ui-panel>
+			<ui-panel>任务六</ui-panel></div>
+			</div></div>`,
+					});
+					var myApp = new MyApp();
+					myApp.attach(document.body);
+	</script>
+
+</html>

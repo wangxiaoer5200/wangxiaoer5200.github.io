@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script src="https://unpkg.com/san@latest/dist/san.dev.js"></script>
+	</head>
+	<style type="text/css">
+		a:hover {
+			cursor: pointer;
+			color: #FF7700;
+		}
+	</style>
+
+	<body>
+
+	</body>
+	<script>
+		var MyApp = san.defineComponent({
+			template: `<div style="width:500px;margin:50px auto;">
+			   <div style="padding:20px;border:1px solid #e5e5e5;">
+			   <p>这是一个标题  <a style="float:right;color:blue;" on-click="toggle">{{text}}</a></p>
+			   <p s-if="textValue1" style="text-indent:2em;">这是展开的内容,可以放一篇文章什么的.我们在做城市选择的时候，一定要看这个城市的第三产业比重。专业和专业之间培养方向的差别还是很大的。如今新媒体的发展如火如荼，许多人依靠自媒体平台实现了自己的梦想，成就了自己的事业。学新闻专业的同学，在写作方面就有天然优势，完全可以写出朋友圈的爆款文章，而传播学的同学还能让文章传播得更广。2、人工智能类其中包括：计算机科学与技术、电子信息、机械工程、自动化。2017年，一个叫作Alpha Go的机器人引起了全世界的关注。Alpha Go是一个人工智能程序，由谷歌旗下DeepMind公司的戴密斯?哈萨比斯团队开发，其主要工作原理是“深度学习”。2016年3月，Alpha Go与围棋世界冠军李世石展开一场人机大战，并以4比1的总比分获得胜利。2017年5月，在中国乌镇的围棋峰会上，Alpha Go与当时世界排名第一的中国棋手柯洁进行较量，并以3比0取胜。其实，人工智能的应用早已无处不在，工业机器人已经大量地在工厂、企业中使用，此外还有无人汽车等等。怎样才能不被人工智能淘汰呢？答案就是成为人工智能的开发者。人工智能相关专业大多数都是工科专业，所以在报考的时候，一般只招收理科生。</p>
+			   </div>
+              </div>`,
+			initData() {
+				return {
+					text: "展开",
+					textValue1: false,
+				};
+			},
+			toggle() {
+				this.data.set("textValue1", !this.data.get('textValue1'));
+				let text = this.data.get('text');
+				if(text=="展开"){
+					this.data.set("text","收起")
+				}else{
+					this.data.set("text","展开")
+				}
+			},
+
+		});
+		var myApp = new MyApp();
+		myApp.attach(document.body);
+	</script>
+
+</html>

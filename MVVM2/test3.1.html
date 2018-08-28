@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script src="https://unpkg.com/san@latest/dist/san.dev.js"></script>
+	</head>
+	<style type="text/css">
+		.changed {
+			color: red;
+		}
+		
+		.item-label {
+			cursor: pointer;
+		}
+		
+		.item-label.selected {
+			color: #409eff;
+		}
+		
+		.cascader-item {
+			display: inline-block;
+			border: 2px solid #e8e8e8;
+			height: 150px;
+			overflow: scroll;
+			padding: 5px 0;
+			width: 180px;
+			/*这里很奇怪 不这么写布局始终有问题*/
+			float: left;
+			margin: 0 0 0 10px;
+		}
+		
+		.cascader-item li {
+			padding: 5px;
+			cursor: pointer;
+			position: relative;
+		}
+		
+		.cascader-item li:hover {
+			background-color: #F6F7FA;
+		}
+		
+		.cascader-item li i {
+			position: absolute;
+			right: 20px;
+			top: 50%;
+			transform: translateY(-50%);
+		}
+		
+		.cascader-container {
+			display: inline-block;
+			position: absolute;
+			transition: all 0.5s ease;
+			transform-origin: top left;
+			transform: scale(0)
+		}
+		
+		.cascader-container.active {
+			transform: scale(1)
+		}
+		
+		.cascader-input {
+			display: inline-block;
+			width: 250px;
+			padding: 5px;
+			border-radius: 6px;
+			font-size: 14px;
+		}
+		.button{
+			width:100px;
+			height: 40px;
+			padding: 5px;
+			border: none;
+			border-radius: 5px;
+			line-height: 20px;
+			color: #FFFFFF;
+			background: #ff7700;		
+		}
+	</style>
+
+	<body>
+
+	</body>
+	<script>
+		var Panel2 = san.defineComponent({
+			template: `<div style="overflow: hidden;"><ul class="cascader-item">
+            <li s-for="item, key in data" on-click="clickHandler(key)">
+                <label class="item-label {{key==selectedIndex ? 'selected' : null}}">{{item.label}}</label>
+                <i s-if ="{{item.children}}" class="fa {{key==selectedIndex ? 'fa-circle' : 'fa-circle-o'}}"></i>
+            </li>
+        </ul>
+        <panel s-ref="child" on-selected="selectedHandler($event)" isRoot="{{false}}" s-if="childrenShow && childrenData.length" data="{{childrenData}}"></panel></div>`,
+			components: {
+				'panel': 'self'
+			},
+			initData: function() {
+				return {
+					childrenShow: false,
+					selectedIndex: undefined
+				}
+			},
+			clickHandler: function(key) {
+				this.data.set('selectedIndex', key)
+				//这里确保没个组件只会展示它的直接孩子节点
+				if(this.ref('child')) {
+					this.ref('child').data.set('childrenShow', false)
+					this.ref('child').data.set('selectedIndex', undefined)
+				}
+				this.data.set('childrenShow', true)
+				//没有孩子节点时 通知父节点
+				if(!this.data.get('data')[key].children) {
+					this.fire('selected', [this.data.get('selectedValue')])
+				}
+			},
+			selectedHandler: function(val) {
+				val.unshift(this.data.get('selectedValue'))
+				//如果不是根节点的话 继续向上派发事件
+				if(!this.data.get('isRoot')) {
+					this.fire('selected', val)
+				} else {
+					this.data.set('show', false)
+					this.data.set('value', val)
+				}
+			},
+			computed: {
+				childrenData: function() {
+					var selectedIndex = this.data.get('selectedIndex')
+					//没有选中或者选中了没有子元素的节点 
+					if(selectedIndex !== undefined && this.data.get('data')[selectedIndex] && this.data.get('data')[selectedIndex].children) {
+						return this.data.get('data')[selectedIndex].children
+					}
+					return []
+				},
+				selectedValue: function() {
+					var selectedIndex = this.data.get('selectedIndex')
+					if(selectedIndex !== undefined) {
+						return this.data.get('data')[selectedIndex].label
+					}
+				}
+			}
+		});
+
+		var Panel = san.defineComponent({
+			components: {
+				'y-panel': Panel2
+			},
+			template: `<div><input class="cascader-input" value="{{valueStr}}" readonly on-click="clickHandler"/>
+        <div class="cascader-container {{show ? 'active' : null}}">
+            <y-panel show="{= show =}" value="{= value =}" isRoot="{{true}}" data="{{data}}"></y-panel>
+        </div>
+        <div style="clear: both"></div></div>`,
+			initData: function() {
+				return {
+					changed: false,
+					value1: "静静等待用户输入"
+				};
+			},
+			computed: {
+				valueStr: function() {
+					if(this.data.get('value')) {
+						return this.data.get('value').join('/')
+					}
+					return '请选择'
+				}
+			},
+			initData: function() {
+				return {
+					show: false
+				}
+			},
+			inited: function() {
+
+			},
+			clickHandler: function() {
+				this.data.set('show', !this.data.get('show'))
+			}
+		});
+
+		var MyApp = san.defineComponent({
+			components: {
+				'x-panel': Panel
+			},
+			template: `<div>
+			<x-panel data="{{data}}" value="{= value =}"></x-panel>
+        <p><button class="button" on-click="resetData">重置</button></p></div>`,
+			initData: function() {
+				return {
+					show: true,
+					value: '',
+					data: [{
+						value: 'zhinan',
+						label: '指南',
+						children: [{
+							value: 'shejiyuanze',
+							label: '设计原则',
+							children: [{
+								value: 'yizhi',
+								label: '一致'
+							}, {
+								value: 'fankui',
+								label: '反馈'
+							}, {
+								value: 'xiaolv',
+								label: '效率'
+							}, {
+								value: 'kekong',
+								label: '可控'
+							}]
+						}, {
+							value: 'daohang',
+							label: '导航',
+							children: [{
+								value: 'cexiangdaohang',
+								label: '侧向导航'
+							}, {
+								value: 'dingbudaohang',
+								label: '顶部导航'
+							}]
+						}]
+					}, {
+						value: 'ziyuan',
+						label: '资源',
+						children: [{
+							value: 'axure',
+							label: 'Axure Components'
+						}, {
+							value: 'sketch',
+							label: 'Sketch Templates'
+						}, {
+							value: 'jiaohu',
+							label: '组件交互文档'
+						}]
+					}]
+				};
+			},
+			messages: {
+				'parent-notified' (msg) {
+					this.data.set('value2', msg.value);
+					this.data.set('changed', true);
+				}
+			},
+			resetData:function(){
+				this.data.set('value',"");
+			}
+		});
+		var myApp = new MyApp();
+		myApp.attach(document.body);
+	</script>
+
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script src="https://unpkg.com/san@latest/dist/san.dev.js"></script>
+	</head>
+	<style type="text/css">
+	li:hover{cursor: pointer;
+	background: #E5E5E5;}
+	</style>
+
+	<body>
+
+	</body>
+	<script>
+		
+		var MyApp = san.defineComponent({
+			template: `<div style="margin:50px">
+			<input type="text"  value="{= value =}" placeholder="选择时间" on-click="showTime" style="width:150px;padding:5px;font-size:16px;color:blue;">
+			<ul style="width:100px;padding:20px;border:1px solid #e5e5e5;" s-if="dialogVal"><li s-for="p in timeList" style="display:block;line-height:30px;" on-click="addItem(p)">{{p}}</li></ul>
+			</div>`,
+			initData: function() {
+				return {
+					dialogVal:false,
+					value: '',
+					timeList:["8:30","9:30","10:30","11:30","12:30","15:30","18:30","21:30"],
+				};
+			},
+			showTime:function(){
+				this.data.set("dialogVal",true)
+			},
+			addItem: function (v) {
+                this.data.set('value',v);
+                this.data.set("dialogVal",false)
+            }
+			
+		});
+		var myApp = new MyApp();
+		myApp.attach(document.body);
+	</script>
+
+</html>

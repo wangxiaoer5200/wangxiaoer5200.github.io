@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script src="https://unpkg.com/san@latest/dist/san.dev.js"></script>
+	</head>
+	<style type="text/css">
+		.box {
+			width: 400px;
+			margin: 0 auto;
+		}
+		
+		.ui-button {
+			outline: none;
+			border: none;
+			background: #65AEFA;
+			color: #fff;
+			width: 40px;
+			height: 30px;
+			transition: background-color .3s;
+		}
+		
+		.ui-button:active {
+			background: #4590FA;
+		}
+		
+		.ui-form-item {
+			display: flex;
+		}
+		
+		.item-label-left,
+		.item-label-right {
+			justify-content: flex-start;
+			align-items: flex-start;
+		}
+		
+		.item-label-left .item-label,
+		.item-label-right .item-label {
+			padding-top: 10px;
+		}
+		
+		.item-label-right .item-label {
+			text-align: right;
+		}
+		
+		.item-label {
+			line-height: 40px;
+			width: 100px;
+		}
+		
+		.require::before {
+			margin-left: -10px;
+			content: "*";
+			color: #ff7275;
+		}
+		
+		.item-input {
+			margin-top: 10px;
+			margin-left: 10px;
+			display: flex;
+		}
+		
+		.error {
+			border: 1px solid #ff7275;
+		}
+		
+		.item-message {
+			padding-left: 10px;
+			font-size: 14px;
+			color: #ff7275;
+			line-height: 25px;
+			height: 25px;
+		}
+		
+		.ui-input {
+			position: relative;
+		}
+		
+		.ui-input input {
+			outline: none;
+			border: 1px solid #aaa;
+			border-radius: 5px;
+			color: #555;
+			font-size: 16px;
+			width: 250px;
+			height: 40px;
+			padding: 10px 10px;
+			box-sizing: border-box;
+			transition: all .3s;
+		}
+		
+		.ui-input .normal:hover {
+			border: 1px solid #555;
+		}
+		
+		.ui-input .normal:focus {
+			border: 1px solid #555;
+			color: #555;
+		}
+		
+		.ui-input input:disabled {
+			cursor: not-allowed;
+			background: #f7f7f7;
+			color: #aaa;
+		}
+		
+		.ui-input input:disabled:hover {
+			border: 1px solid #aaa;
+		}
+		
+		.ui-input .error {
+			border: 1px solid #ff7275;
+		}
+	</style>
+
+	<body>
+
+	</body>
+	<script>
+		var Button = san.defineComponent({
+			template: `<div><button
+        type="button"
+        class="ui-button"
+        on-input="handleInput($event)"
+        on-focus="handleFocus($event)"
+        on-blur="handleBlur($event)"
+        on-click="handleClick($event)">
+        <slot></slot>
+    </button>
+			</div>`,
+		
+				handleInput: function(event) {
+					this.fire("input", event);
+				},
+				handleFocus: function(event) {
+					// 重新派发focus事件给父元素
+					this.fire("focus", event);
+				},
+				handleBlur: function(event) {
+					// 重新派发blur事件给父元素
+					this.fire("blur", event);
+				},
+				handleClick: function(event) {
+					// 重新派发blur事件给父元素
+					this.fire("click", event);
+				},
+			
+		});
+
+		var Form = san.defineComponent({
+			template: `<div><form
+        class="ui-form"
+        style="{{ formstyle }}"
+        formModel="{= formModel =}"
+        s-ref="form">
+        <slot></slot>
+    </form>
+			</div>`,
+			initData: function() {
+				return {
+					labelWidth: "100px",
+					rules: [],
+					labelPosition: "left", //可选值为top,right,left。
+					formModel: {},
+					fields: [] //保存子组件
+				}
+			},
+			messages: {
+				"UI:form-item-add": function(value) {
+					if(value) {
+						this.data.push("fields", value.target);
+					}
+				},
+				"UI:form-item-remove": function(value) {
+					if(value) {
+						this.data.remove("fields", value.target);
+					}
+				}
+			},
+			// 对表单执行验证
+			validate: async function(callback) {
+				let error = []; //储存错误的组
+				let fields = this.data.get("fields");
+				await fields.forEach(async ele => {
+					await ele.validate(error);
+				})
+				callback(error);
+			},
+			// 对单一的表单控件执行验证
+			validateField: function(formName) {
+				let fields = this.data.get("fields");
+				for(let i = 0; i < fields.length; i++) {
+					if(fields[i].data.get("prop") === formName) {
+						return fields[i].validate();
+					}
+				}
+				return false;
+			},
+			// 重置所有表单
+			resetFields: function() {
+				let fields = this.data.get("fields");
+				fields.forEach(ele => {
+					ele.resetFields();
+				})
+			}
+		});
+
+		var FormItem = san.defineComponent({
+			template: `<div class="ui-form-item {{ position }}">
+        <label for="{{ labelFor }}" class="item-label {{ require ? 'require':''}}">
+            <slot name="label">{{ label }}</slot>
+        </label>
+        <div class="item-content">
+            <div class="item-input">
+                <slot></slot>
+            </div>
+            <div class="item-message">{{ Message }}</div>
+        </div>
+    </div>`,
+			initData: function() {
+				let o = new Object();
+				o.labelWidth = this.parentComponent.data.get("labelWidth");
+				o.rules = this.parentComponent.data.get("rules");
+				o.labelPosition = this.parentComponent.data.get("labelPosition");
+				return {
+					require: false,
+					label: "",
+					labelWidth: "100px",
+					prop: "",
+					rules: [],
+					error: "",
+					helpText: "",
+					labelPosition: "right",
+					form: o,
+					isError: false,
+					messagePrefix: "☹",
+					uiInput: {}
+				}
+			},
+			// 创建完成派发创建消息和组件给父组件
+			created: function() {
+				this.dispatch('UI:form-item-add', this);
+			},
+			// 删除时派发删除消息
+			disposed: function() {
+				this.dispatch('UI:form-item-remove', this);
+			},
+			//过滤器
+			filters: {
+
+			},
+			//计算属性
+			computed: {
+				labelFor: function() {
+					return this.data.get("prop");
+				},
+				form: function() {
+					return this.data.get("form");
+				},
+				Message: function() {
+					if(this.data.get("isError")) {
+						return this.data.get("messagePrefix") + this.data.get("error");
+					} else {
+						return "";
+					}
+
+				},
+				position: function() {
+					let Position = this.data.get("labelPosition");
+
+					// 检验有效性
+					if(Position === "left" ||
+						Position === "right" ||
+						Position === "top") {
+						return `item-label-${Position}`;
+					} else {
+						//   console.log('else');
+
+						return "item-label-left"
+					}
+				}
+			},
+			setError: function(bool) {
+				// 存在input框
+				this.data.set("isError", bool);
+				if(this.data.get("uiInput").data) {
+					this.data.get("uiInput").data.set("isError", bool);
+				}
+			},
+			// 验证函数
+			validate: function(ERRORS = []) {
+				const descriptor = {};
+				let prop = this.data.get("prop");
+				let rules = this.data.get("rules");
+				if((!rules || rules.length === 0) && !this.data.get("require")) {
+					return true;
+				}
+				if(this.data.get("require")) {
+
+				}
+				let value = this.parentComponent.data.get("formModel")[prop];
+				descriptor[prop] = rules;
+				// 如果没有验证规则，且必选的选项，添加必选验证
+				if(rules.length === 0 && this.data.get("require")) {
+					descriptor[prop].push({
+						required: true,
+						message: '必选',
+						type: 'string'
+					})
+				}
+//				const validator = new AsyncValidator(descriptor);
+				const model = {};
+				model[prop] = value;
+//				validator.validate(model, {
+//					firstFields: true
+//				}, (errors, invalidFields) => {
+//					// 设置错误信息
+//					if(errors) {
+//						this.setError(true);
+//						ERRORS.push(errors[0].field);
+//						if(errors[0].message && errors[0].message.length > 0) {
+//							this.data.set("error", errors[0].message);
+//						}
+//						return false;
+//					}
+//					// 验证通过
+//					this.setError(false);
+//					return true;
+//				});
+
+			},
+			// 接收消息
+			messages: {
+				"UI:input-add": function(value) {
+					this.data.set("uiInput", value.target);
+					let input = value.target;
+					if(input.data) {
+						input.data.set("placeholder", this.data.get("helpText"));
+					}
+				},
+				"UI:input-blur": function() {
+					this.validate();
+				}
+			},
+			// 重置error状态
+			resetFields: function() {
+				this.setError(false);
+			},
+			trimWhitespace: "all",
+		});
+
+		var Input = san.defineComponent({
+			template: `  <div class="ui-input">
+        <input 
+            class="{{ isError ? 'error' : 'normal' }}"
+            type="{{ inputType }}"
+            value="{= value =}"
+            placeholder="{{ placeholder }}"
+            disabled="{{ disabled }}"
+            readonly="{{ readonly }}"
+            on-input="handleInput($event)"
+            on-focus="handleFocus($event)"
+            on-blur="handleBlur($event)"
+        >
+    </div>`,
+			initData: function() {
+				return {
+					value: "",
+					placeholder: "",
+					disabled: false,
+					readonly: false,
+					isError: false,
+					inputType: "text"
+				}
+			},
+			// 创建删除时分别派发消息
+			created: function() {
+				this.dispatch("UI:input-add", this);
+			},
+			disposed: function() {
+				this.dispatch('UI:input-remove', this);
+			},
+			trimWhitespace: "all",
+			// 重新派发事件和消息
+			handleInput: function(event) {
+				this.fire("input", event);
+			},
+			handleFocus: function(event) {
+				// 重新派发focus事件给父元素
+				this.fire("focus", event);
+			},
+			handleBlur: function(event) {
+				// 重新派发blur事件和消息给父元素
+				this.fire("blur", event);
+				this.dispatch("UI:input-blur", event);
+			}
+		});
+
+		var MyApp = san.defineComponent({
+			template: ` <div class="box">
+        <ui-form
+            formModel="{= formModel =}"
+            san-ref="formModel">
+            <ui-form-item
+                rules="{{ ruleMobile }}"
+                prop="mobile"
+                helpText="请输入手机号码"
+                label="手机号码"
+                require="{{ false }}">
+                <ui-input
+                    value="{= formModel.mobile =}"
+                ></ui-input>
+            </ui-form-item>
+            <ui-form-item
+                rules="{{ ruleAddress }}"
+                prop="address"
+                helpText="请输入地址"
+                label="地址"
+                require="{{ false }}">
+                <ui-input
+                    value="{= formModel.address =}"
+                ></ui-input>
+            </ui-form-item>
+            <ui-form-item
+                prop="userName"
+                require="{{true}}"
+                helpText="输入姓名与身份证保持一致"
+                label="姓名">
+                <ui-input
+                    value="{= formModel.userName =}"
+                ></ui-input>
+            </ui-form-item>
+            <ui-form-item
+                rules="{{ruleIdCard}}"
+                prop="idCard"
+                helpText="根据国家相关规定，需要您输入身份证号码"
+                label="身份证号码">
+                <ui-input
+                    value="{= formModel.idCard =}"
+                ></ui-input>
+            </ui-form-item>
+            <ui-form-item>
+                <ui-button on-click="submitForm('formModel')" style="margin-right:50px;">提交</ui-button>
+                <ui-button on-click="resetForm('formModel')">重置</ui-button>
+            </ui-form-item>
+        </ui-form>
+    </div>`,
+			components: {
+				'ui-button': Button,
+				'ui-form': Form,
+				'ui-form-item': FormItem,
+				'ui-input': Input
+			},
+			initData() {
+				const idCardValidate = (rule, value, callback) => {
+					if(value) {
+						// 异步、远程验证
+						let userName = this.data.get('formModel.userName');
+						console.log({
+							userName,
+							idCard: value
+						});
+						// 将用户名和身份证号码作为参数发送异步请求，到服务端验证
+						setTimeout(function() {
+							callback([new Error('您输入的身份信息不匹配')]);
+						}, 1000);
+					} else {
+						setTimeout(function() {
+							callback(['请输入身份证号码']);
+						}, 1000);
+					}
+				};
+
+				return {
+					formModel: {
+						mobile: '',
+						userName: '',
+						idCard: '',
+						address: ''
+					},
+					ruleMobile: [{
+							type: 'string',
+							required: true,
+							message: '请输入手机号码'
+						},
+						{
+//							validator(rule, value, callback) {
+//								if(value) {
+//									if(!/^[1][3,4,5,7,8][0-9]{9}$/.test(value)) {
+//										callback([new Error('请输入正确的手机号码!')]);
+//									} else {
+//										callback([]);
+//									}
+//								} else {
+//									callback([new Error('请输入手机号码!')]);
+//								}
+//							}
+						}
+					],
+					ruleAddress: [{
+							required: true,
+							message: '必选',
+							type: 'string'
+						},
+						{
+
+							min: 6,
+							message: '用户名需不少于6个字符'
+						},
+						{
+							max: 20,
+							message: '用户名需不超过20个字符'
+						}
+					],
+					ruleIdCard: [{
+							type: 'string',
+							require: true
+						},
+						{
+//							validator: idCardValidate
+						}
+					]
+				};
+			},
+			submitForm(formName) {
+                let mobile = this.data.get("formModel.mobile")
+                let userName = this.data.get("formModel.userName")
+                let idCard = this.data.get("formModel.idCard")
+                let address = this.data.get("formModel.address")
+				if(userName==""){
+					alert("姓名不能为空");
+					return;
+				}
+							
+				
+//				let formModel = this.data.get(formName);
+//				if(formName === 'formModel') {
+//					this.data.set('formStatus', 'validating');
+//				}
+//				this.ref(formName).validate((valid) => {
+//					this.data.set('formStatus', 'validateEnd');
+//					if(valid) {
+//						// 验证成功 do someThing
+//						console.log(formModel);
+//					} else {
+//						// 验证失败 do someThing
+//						console.log(valid)
+//					}
+//				});
+			},
+			resetForm(formName) {
+//				this.ref(formName).resetFields();
+                this.data.set("formModel.mobile","")
+                this.data.set("formModel.userName","")
+                this.data.set("formModel.idCard","")
+                this.data.set("formModel.address","")
+			}
+
+		});
+		var myApp = new MyApp();
+		myApp.attach(document.body);
+	</script>
+
+</html>
